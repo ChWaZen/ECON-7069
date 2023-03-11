@@ -1,0 +1,15 @@
+---
+title: "Halloworld"
+output: pdf_document
+date: "2023-03-11"
+---
+
+```{r}
+library ('data.table')
+library('ggplot2')
+library ('fixest')
+library ('knitr')
+library('dplyr')
+
+```
+

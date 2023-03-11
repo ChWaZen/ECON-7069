@@ -1,0 +1,21 @@
+---
+title: "Debugger"
+output: pdf_document
+date: "2023-03-11"
+---
+
+```{r}
+#creat the function
+adds<-function(a,b){
+  return(sum(a,b))}
+
+#test function
+adds(4,5)
+
+#examination
+4+5
+
+
+
+```
+
