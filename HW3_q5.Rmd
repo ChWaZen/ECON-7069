@@ -1,0 +1,35 @@
+---
+title: "HW3"
+output: html_document
+date: "2023-04-23"
+---
+
+```{r}
+library ("data.table")
+library ("fixest")
+
+set.seed(2000)
+data <-data.table (state= rep (1:40,each=750),
+id= rep (1:1000,each=30),
+year=rep (1980:2009,1000),
+indv_fix =rep( runif (1000, min =0, max =5),each=30), # individual fixed effect
+time_fix =rep (1:30,1000), # time fixed effect
+group=rep (1:4,each=7500),
+treat_year=rep(c (1986,1992,1998,2004),each=7500),
+eps= rnorm (30000,0,(0.5)^2), # epsilon term
+hetero=c( rnorm (7500,10,(0.2)^2),rnorm (7500,8,(0.2)^2),
+rnorm (7500,6,(0.2)^2),rnorm (7500,4,(0.2)^2)))
+
+data [,treat:= ifelse (year >=treat_year ,1,0)]
+data [ , time_til:=year -treat_year]
+data [,treated:=1]
+data [,y:=indv_fix+ time_fix+treat * hetero *(year -treat_year+1)+eps] # outcome
+
+twfe <-feols(y~i ( time_til ,treated ,ref=-1)|id+year ,
+data ,vcov= ~ state) # the problematic TWFE
+
+good <-feols(y~ sunab(treat_year ,year)|id+year ,
+data , subset =~year <2004,
+vcov=~ state) # apply Sun & Abraham decomposition
+```
+
